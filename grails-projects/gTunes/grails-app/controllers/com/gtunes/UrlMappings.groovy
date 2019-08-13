@@ -7,7 +7,8 @@ package com.gtunes
 class UrlMappings {
 
     static mappings = {
-        "/"(controller:"store", action: "index");
+        "/"(controller: 'user', action: 'welcome');
+
         "/showAlbum/$id"(controller:'album', action:'show') {
                     format = 'simple' //request.format == simple
                 }
@@ -27,7 +28,7 @@ class UrlMappings {
             }
         }
 
-        "/"(view:"/index")
+        // "/"(view:"/index")
         "500"(view:'/error')
         "404"(view:'/notFound')
         //urls can be generated in views via g:link tag

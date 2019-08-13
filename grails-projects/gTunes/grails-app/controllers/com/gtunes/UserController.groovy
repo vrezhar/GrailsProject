@@ -1,15 +1,17 @@
 package com.gtunes
 
+import grails.plugin.springsecurity.annotation.Secured
+
 class LoginCommand
 {
     String login
     String password
     private usr
-    User getUser()
+    SecureUser getUser()
     {
         if(!usr && login)
         {
-            usr = User.findByLogin(login, [fetch:[purchasedSongs:'join']])
+            usr = SecureUser.findByUsername(login, [fetch:[purchasedSongs:'join']])
         }
         return usr
     }
@@ -30,27 +32,41 @@ class LoginCommand
                 }
             }
 }
-
+@Secured(['ROLE_USER','ROLE_ADMIN'])
 class UserController
 {
 
+    def showTime()
+    {
+        new Date()
+    }
+    def welcome()
+    {
+        render view: '/user/welcome'
+    }
     def register()
     {
         if(request.method == 'POST')
         {
-            def usr = new User()
-            usr.properties['login', 'password', 'firstName', 'lastName'] = params
+            def usr = new SecureUser()
+            def userRole = Role.findOrSaveWhere(authority: 'ROLE_USER')
+            usr.properties['username', 'password', 'firstName', 'lastName' ] = params
+
+
+
+
             if(usr.password != params.confirm)
             {
                 usr.errors.rejectValue("password", "user.password.dontmatch")
                 return [user: usr]
 
             }
-            else if(usr.save())
+            else if(SecureUserRole.create(usr,userRole))
             {
                 //using the session scope, user needs to be active untill loging out
                 session.user = usr
-                redirect controller:"store"
+                //if(usr.getAuthorities()[0].authority == 'ROLE_USER')
+                    redirect controller:'store'
             }
             else
             {
@@ -65,7 +81,10 @@ class UserController
             if(!cmd.hasErrors())
             {
                 session.user = cmd.getUser()
-                redirect controller:'store'
+                //if(cmd.getUser().authorities.contains(adminRole))
+                //    render 'admin logged in!'
+                 //else
+                redirect controller: 'store', action: 'index'
             }
             else
             {

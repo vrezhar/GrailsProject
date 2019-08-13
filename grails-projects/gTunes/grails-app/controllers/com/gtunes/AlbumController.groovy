@@ -1,5 +1,6 @@
 package com.gtunes
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
@@ -34,7 +35,7 @@ class ALbumCreateCommand
     }
 
 }
-
+@Secured(['ROLE_ADMIN'])
 class AlbumController
 {
     def beforeInterceptor =

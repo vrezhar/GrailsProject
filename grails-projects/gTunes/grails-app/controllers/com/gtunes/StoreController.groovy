@@ -1,7 +1,8 @@
 package com.gtunes;
-import grails.gorm.DetachedCriteria;
+import grails.gorm.DetachedCriteria
+import grails.plugin.springsecurity.annotation.Secured;
 
-
+@Secured(['ROLE_ADMIN','ROLE_USER'])
 class StoreController
 {
 
@@ -38,6 +39,6 @@ class StoreController
     def index()
     {
         //unnecessary
-        render view: "index"
+        render view: "/index"
     }
 }
