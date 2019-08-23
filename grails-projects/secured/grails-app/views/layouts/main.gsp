@@ -15,13 +15,11 @@
 </head>
 
 <body>
-
-<sec:ifNotGranted roles="['ROLE_ADMIN','ROLE_USER']">
+<sec:ifNotLoggedIn>
     <g:link controller="user" action="register">
         Register
     </g:link>
-</sec:ifNotGranted>
-
+</sec:ifNotLoggedIn>
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-static-top" role="navigation">
     <a class="navbar-brand" href="/#"><asset:image src="grails.svg" alt="Grails Logo"/></a>

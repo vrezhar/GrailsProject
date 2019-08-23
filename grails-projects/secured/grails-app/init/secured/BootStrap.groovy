@@ -25,9 +25,14 @@ class BootStrap {
 
     def init = { servletContext ->
         def adminRole = Role.findOrSaveWhere(authority: 'ROLE_ADMIN')
-        def admin = User.findOrSaveWhere(username: 'admin',password: '1Test',firstName: 'Admin', lastName: 'Admin')
-        SECURITYCARD.each { k, v ->
-            admin.addToCoordinates(new SecurityCoordinate(position: k, value: v, user: admin))
+        def admin = User.findWhere(username: 'admin',password: '1Test',firstName: 'Admin', lastName: 'Admin')
+        if(!admin)
+        {
+            admin = new User(username: 'admin',password: '1Test',firstName: 'Admin', lastName: 'Admin')
+            SECURITYCARD.each { k, v ->
+                admin.addToCoordinates(new SecurityCoordinate(position: k, value: v, user: admin))
+            }
+            admin.save()
         }
         if(!admin.authorities.contains(adminRole))
         {
