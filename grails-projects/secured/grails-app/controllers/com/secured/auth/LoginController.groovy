@@ -10,11 +10,11 @@ class LoginController extends grails.plugin.springsecurity.LoginController imple
 
         def conf = getConf()
 
-
         if (springSecurityService.isLoggedIn()) {
             redirect uri: conf.successHandler.defaultTargetUrl
             return
         }
+
 
         Collections.shuffle(coordinatePositions)
         def position = coordinatePositions.first()

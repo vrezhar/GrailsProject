@@ -1,51 +1,45 @@
 package com.secured.auth
 
-import grails.config.Config
-import grails.core.support.GrailsConfigurationAware
+
 import grails.plugin.springsecurity.annotation.Secured
 
-class UserController implements GrailsConfigurationAware {
+@Secured(['permitAll'])
+class UserController  {
 
-    List<String> coordinatePositions;
-    Random r = new Random()
+    def patternValidator
+    def securityCoordinateGenerator
+
     def register()
     {
-        if(request.method == 'POST') {
-            def userRole = Role.findOrSaveWhere(authority: 'ROLE_USER')
-            User u = new User()
-            u.username = params.username
+        if(request.method == 'POST')
+        {
+
+            def userRole = Role.findOrSaveWhere(authority: "ROLE_USER")
+            User u = User.findOrSaveWhere(username: params.username,firstName: params.firstName, lastName: params.lastName)
             u.password = params.password
-            u.firstName = params.firstName
-            u.lastName = params.lastName
-            u.authorities.add(userRole)
-            u.accountExpired = false
-            u.accountLocked = false
-            u.passwordExpired = false
-            Map<String, String> securityCard = [:]
-            Collections.shuffle(coordinatePositions)
-            for(entry in coordinatePositions)
+            if(!patternValidator.validateUsername(u.username))
             {
-                securityCard.put(entry,r.nextInt(100).toString())
+                u.errors.rejectValue("username","user.username.incorrect")
+                return [user: u]
             }
-            securityCard.each { k, v ->
-                u.addToCoordinates(new SecurityCoordinate(position: k, value: v, user: u))
-            }
-            //u.properties['username', 'password', 'firstName', 'lastName'] = params
-            if(u.password != params.confirm) {
+            def securityCard = securityCoordinateGenerator.generateCoordinates()
+            if (u.password != params.confirm)
+            {
                 u.errors.rejectValue("password", "user.password.dontmatch")
                 return [user: u]
-            } else if(u.save()) {
-                session.user = u
-                UserRole.create(u,userRole)
-                redirect controller: 'main',action:'confirm'
-            } else {
-                render body: "something went horribly wrong",model: [user: u]
             }
+            else
+            {
+                securityCard.each {k,v ->
+                    u.addToCoordinates(new SecurityCoordinate(position: k,value: v,user: u))
+                }
+                u.save()
+                UserRole.create(u,userRole,true)
+                flash.securitycard = securityCard
+                redirect controller: 'main',action:'confirm'
+            }
+
         }
     }
 
-    @Override
-    void setConfiguration(Config co) {
-        coordinatePositions = co.getProperty('security.coordinate.positions', List, []) as List<String>
-    }
 }

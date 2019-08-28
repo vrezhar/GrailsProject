@@ -23,8 +23,8 @@
     </tr>
     <g:each var="user" in="${users}">
         <tr>
-            <th>"${user.firstName}"</th>
-            <th>"${user.lastName}"</th>
+            <th>${user.firstName}</th>
+            <th>${user.lastName}</th>
         </tr>
     </g:each>
 </table>

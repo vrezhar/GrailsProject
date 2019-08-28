@@ -8,5 +8,7 @@ class SecurityCoordinate {
     String value
     static belongsTo = [user: User]
     static constraints = {
-    }
+
+        }
+
 }

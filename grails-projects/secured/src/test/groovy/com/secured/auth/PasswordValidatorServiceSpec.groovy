@@ -1,9 +1,9 @@
-package gtunes
+package com.secured.auth
 
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-class CoordinateValidatorServiceSpec extends Specification implements ServiceUnitTest<CoordinateValidatorService>{
+class PatternValidatorServiceSpec extends Specification implements ServiceUnitTest<PatternValidatorService>{
 
     def setup() {
     }
