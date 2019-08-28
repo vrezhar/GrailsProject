@@ -13,7 +13,6 @@ class UserController  {
     {
         if(request.method == 'POST')
         {
-
             def userRole = Role.findOrSaveWhere(authority: "ROLE_USER")
             User u = User.findOrSaveWhere(username: params.username,firstName: params.firstName, lastName: params.lastName)
             u.password = params.password

@@ -9,15 +9,15 @@ class PatternValidatorService {
 
     int validatePassword(String password)
     {
-        if(password.length() < 5)
-            return 0;
+        if(password.length() < 7)
+            return 0
         if(password.length() > 16)
-            return -1;
-        int strength = 0;
-        strength += validatePatternFor("(?=.*d)",password);//contains at least one number
-        strength += validatePatternFor("(?=.*[A-Z])",password);//contains at least one uppercase character
-        strength += validatePatternFor("(?=.*[a-z])",password);//contains at least one lowercase character
-        return strength;
+            return -1
+        int strength = 0
+        strength += validatePatternFor(".*\\d.*",password);//contains at least one number
+        strength += validatePatternFor(".*[A-Z].*",password);//contains at least one uppercase character
+        strength += validatePatternFor(".*[a-z].*",password);//contains at least one lowercase character
+        return strength
     }
 
     boolean validateUsername(String username)

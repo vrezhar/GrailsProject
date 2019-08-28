@@ -10,6 +10,7 @@ security:
             - A6
             - A7
             - A8
+            - B6
             - A9
             - A10
             - B1
@@ -25,6 +26,7 @@ security:
             - C1
             - C2
             - C3
+            - B7
             - C4
             - C5
             - C6
