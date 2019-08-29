@@ -19,13 +19,16 @@ class UserController  {
             User usr = User.findWhere(username: params.username)
             if(usr)
             {
+                usr = new User(username: params.username, firstName: params.firstName, lastName: params.lastName)
                 usr.errors.rejectValue("username","user.username.exists")
-                return [user: new User(username: params.username, firstName: params.firstName, lastName: params.lastName)]
+                return [user: usr]
             }
             usr = new User(username:  params.username ,password:  params.password, firstName:  params.firstName, lastName:  params.lastName)
+            if(!usr.validate())
+                return [user: usr]
             if (params.password != params.confirm)
             {
-                usr.errors.rejectValue("password", "user.password.dontmatch")
+                usr.errors.rejectValue("password", "user.password.doesntmatch")
                 return [user: usr]
             }
 
@@ -50,6 +53,7 @@ class UserController  {
 
             userInitializer.addToCoordinates(usr,securityCard,true)
             userInitializer.assignRole(usr,userRole,true)
+
 
             springSecurityService.reauthenticate(usr.username,usr.password)
             flash.securitycard = securityCard

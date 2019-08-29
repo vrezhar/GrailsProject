@@ -5,7 +5,7 @@
   Time: 01:38
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.springframework.validation.FieldError" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title></title>
@@ -14,14 +14,19 @@
 <body id="body">
 <h1>Registration</h1>
 <p>Complete the form below to create an account!</p>
+<g:if test="${flash.message}">
+    <div class="message" role="status">${flash.message}</div>
+</g:if>
 <g:hasErrors bean="${user}">
-    <div class="errors">
-        <g:renderErrors bean="${user}"></g:renderErrors>
-    </div>
+    <ul class="errors" role="alert">
+        <g:eachError bean="${user}" var="error">
+            <li <g:if test="${error in FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
+        </g:eachError>
+    </ul>
 </g:hasErrors>
 <g:form controller="user" action="register" name="registerForm">
     <div class="formField">
-        <label for="username">Login:</label>
+        <label for="username">Username:</label>
         <g:textField name="username" value="${user?.username}"></g:textField>
     </div>
     <div class="formField">

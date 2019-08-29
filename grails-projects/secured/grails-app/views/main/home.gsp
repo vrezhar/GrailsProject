@@ -12,7 +12,9 @@
     </title>
 
     <div style = "alignment: center" >
-        <h1>Welcome, ${user}!</h1>
+        <h1>
+            <b>Welcome, ${user}!</b>
+        </h1>
 
 
 
@@ -26,15 +28,12 @@
 
     <div class = "navbar">
         <sec:ifAllGranted roles="ROLE_ADMIN" >
+            <h1>
             <g:link controller="main" action="list">
                 List of all users
             </g:link>
+            </h1>
         </sec:ifAllGranted>
-        <sec:ifLoggedIn>
-            <g:link controller="logout" >
-                Logout
-            </g:link>
-        </sec:ifLoggedIn>
     </div>
 
 </body>
