@@ -48,14 +48,12 @@ class UserController  {
             }
             Map<String,String> securityCard = securityCoordinateGenerator.generateCoordinates()
 
-            userInitializer.addToCoordinates(usr,securityCard)
-            userInitializer.assignRole(usr,userRole)
+            userInitializer.addToCoordinates(usr,securityCard,true)
+            userInitializer.assignRole(usr,userRole,true)
 
-
-            usr.save(true)
             springSecurityService.reauthenticate(usr.username,usr.password)
             flash.securitycard = securityCard
-            redirect controller: 'main',action:'home'
+            redirect controller: 'main',action:'confirm'
 
         }
     }

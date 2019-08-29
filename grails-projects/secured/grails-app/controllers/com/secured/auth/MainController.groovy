@@ -22,10 +22,10 @@ class MainController {
         render view:"home", model: [user: springSecurityService.getCurrentUser().username ]
     }
 
-    @Secured("permitAll")
+    @Secured(["ROLE_USER","ROLE_ADMIN"])
     def confirm()
     {
-        render "${flash.securitycard}, btw implement me properly"
+        render view: "confirm"
     }
 
 
