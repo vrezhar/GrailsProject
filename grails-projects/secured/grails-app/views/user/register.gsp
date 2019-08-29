@@ -25,7 +25,7 @@
     </ul>
 </g:hasErrors>
 <g:form controller="user" action="register" name="registerForm">
-    <div class="formField">
+    <div class="formField" id="usernameForm">
         <label for="username">Username:</label>
         <g:textField name="username" value="${user?.username}"></g:textField>
     </div>
@@ -47,5 +47,10 @@
     </div>
     <g:submitButton class="formButton" name="register" value="Register"></g:submitButton>
 </g:form>
+<script>
+    (function() {
+        document.forms['usernameForm'].elements['username'].focus();
+    })();
+</script>
 </body>
 </html>
