@@ -2,17 +2,18 @@ package spring
 
 import com.secured.auth.PatternValidatorService
 import com.secured.auth.SecurityCoordinateGeneratorService
+import com.secured.auth.UserInitializerService
 import com.secured.auth.UserPasswordEncoderListener
 import com.secured.auth.CoordinateValidatorService
 import com.secured.auth.TwoFactorAuthenticationDetailsSource
 import com.secured.auth.TwoFactorAuthenticationProvider
-import com.secured.auth.UserRegistratorService
+
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy
 // Place your Spring DSL code here
 beans = {
     securityCoordinateGenerator(SecurityCoordinateGeneratorService)
 
-    userRegistrator(UserRegistratorService)
+    userInitializer(UserInitializerService)
 
     patternValidator(PatternValidatorService)
 

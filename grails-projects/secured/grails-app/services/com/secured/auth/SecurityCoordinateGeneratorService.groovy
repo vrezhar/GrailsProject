@@ -11,7 +11,7 @@ class SecurityCoordinateGeneratorService implements ICoordinateService, GrailsCo
     private static List<String> coordinatePositions
 
     @Override
-    def generateCoordinates() {
+    Map<String,String> generateCoordinates() {
         Map<String,String> securityCard = [:]
         for(coordinate in coordinatePositions)
             securityCard.put(coordinate,convert(r.nextInt(100)))

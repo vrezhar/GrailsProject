@@ -8,35 +8,54 @@ class UserController  {
 
     def patternValidator
     def securityCoordinateGenerator
+    def userInitializer
+    def springSecurityService
 
     def register()
     {
         if(request.method == 'POST')
         {
             def userRole = Role.findOrSaveWhere(authority: "ROLE_USER")
-            User u = User.findOrSaveWhere(username: params.username,firstName: params.firstName, lastName: params.lastName)
-            u.password = params.password
-            if(!patternValidator.validateUsername(u.username))
+            User usr = User.findWhere(username: params.username)
+            if(usr)
             {
-                u.errors.rejectValue("username","user.username.incorrect")
-                return [user: u]
+                usr.errors.rejectValue("username","user.username.exists")
+                return [user: new User(username: params.username, firstName: params.firstName, lastName: params.lastName)]
             }
-            def securityCard = securityCoordinateGenerator.generateCoordinates()
-            if (u.password != params.confirm)
+            usr = new User()
+            userInitializer.initialize(user: usr, username:  params.username ,password:  params.password, firstName:  params.firstName, lastName:  params.lastName)
+            if (params.password != params.confirm)
             {
-                u.errors.rejectValue("password", "user.password.dontmatch")
-                return [user: u]
+                usr.errors.rejectValue("password", "user.password.dontmatch")
+                return [user: usr]
             }
-            else
+
+            if(!patternValidator.validateUsername(usr.username))
             {
-                securityCard.each {k,v ->
-                    u.addToCoordinates(new SecurityCoordinate(position: k,value: v,user: u))
-                }
-                u.save()
-                UserRole.create(u,userRole,true)
-                flash.securitycard = securityCard
-                redirect controller: 'main',action:'confirm'
+                usr.errors.rejectValue("username","user.username.incorrect")
+                return [user: usr]
             }
+            switch(patternValidator.validatePassword(usr.password))
+            {
+                case 0:
+                    usr.errors.rejectValue("password","user.password.tooshort")
+                    return [user: usr]
+                case -1:
+                    usr.errors.rejectValue("password","user.password.toolong")
+                    return [user: usr]
+                case 1:
+                    usr.errors.rejectValue("password","user.password.tooweak")
+                    return [user: usr]
+            }
+            Map<String,String> securityCard = securityCoordinateGenerator.generateCoordinates()
+
+            userInitializer.assignRole(usr,userRole)
+            userInitializer.addToCoordinates(usr,securityCard)
+
+            usr.save(true)
+            springSecurityService.reauthenticate(usr.username,usr.password)
+            flash.securitycard = securityCard
+            redirect controller: 'main',action:'home'
 
         }
     }
