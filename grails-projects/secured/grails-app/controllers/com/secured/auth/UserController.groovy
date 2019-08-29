@@ -6,9 +6,9 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured(['permitAll'])
 class UserController  {
 
-    def patternValidator
-    def securityCoordinateGenerator
-    def userInitializer
+    PatternValidatorService patternValidator
+    SecurityCoordinateGeneratorService securityCoordinateGenerator
+    UserInitializerService userInitializer
     def springSecurityService
 
     def register()
@@ -22,8 +22,7 @@ class UserController  {
                 usr.errors.rejectValue("username","user.username.exists")
                 return [user: new User(username: params.username, firstName: params.firstName, lastName: params.lastName)]
             }
-            usr = new User()
-            userInitializer.initialize(user: usr, username:  params.username ,password:  params.password, firstName:  params.firstName, lastName:  params.lastName)
+            usr = new User(username:  params.username ,password:  params.password, firstName:  params.firstName, lastName:  params.lastName)
             if (params.password != params.confirm)
             {
                 usr.errors.rejectValue("password", "user.password.dontmatch")
@@ -49,8 +48,9 @@ class UserController  {
             }
             Map<String,String> securityCard = securityCoordinateGenerator.generateCoordinates()
 
-            userInitializer.assignRole(usr,userRole)
             userInitializer.addToCoordinates(usr,securityCard)
+            userInitializer.assignRole(usr,userRole)
+
 
             usr.save(true)
             springSecurityService.reauthenticate(usr.username,usr.password)

@@ -23,7 +23,6 @@ class BootStrap {
              'D6': '38', 'D7': '17', 'D8': '88', 'D9': '70', 'D10': '12'
             ]
 
-    
 
     def init = { servletContext ->
         def adminRole = Role.findOrSaveWhere(authority: 'ROLE_ADMIN')
